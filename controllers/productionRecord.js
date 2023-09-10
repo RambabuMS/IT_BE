@@ -35,21 +35,32 @@ const getRecords = async(req,res)=>{
 
 const getAllRecords = async(req,res)=>{
     try{
+
     const { fromDate, toDate } = req.query;
+    let matchStage;
     let productionRecords;
+
     if(fromDate && toDate){
         const formattedFromDate = moment(fromDate).format("YYYY-MM-DDTHH:mm:ss.SSSZ");
         const formattedToDate = moment(toDate).format("YYYY-MM-DDTHH:mm:ss.SSSZ");
-        productionRecords = await Production.find({
-            createdAt: { 
-                $gte: new Date(formattedFromDate), 
-                $lte: new Date(formattedToDate) 
-            },
-            })
-            .where({status : 'Completed'});
-    } else {
-        productionRecords = await Production.find().where({status : 'Completed'});
-    }
+        matchStage = {
+            createdAt: { $gte: new Date(formattedFromDate), $lte: new Date(formattedToDate) },
+            status : 'Completed'
+        }
+        } else matchStage = {status : 'Completed'};
+        const groupStage = {
+            _id: '$bikeId',
+            count: { $sum: 1 },
+          };
+        const aggregatedData = await Production.aggregate([
+            { $match: matchStage },
+            { $group: groupStage },
+          ]);
+        productionRecords = await Production.populate(aggregatedData, {
+            path: '_id',
+            select: 'name', 
+            model: 'Bike',
+          });
 
     res.status(200).json({success : true, data: productionRecords})
 
