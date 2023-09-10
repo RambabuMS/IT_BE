@@ -1,8 +1,9 @@
 const mongoose = require('mongoose');
 
 const productionRecordSchema = new mongoose.Schema({
-  username:{
+  status:{
     type : String,
+    enum: ['inProgress', 'Completed'],
     required: true
   },
   bikeId:{
@@ -11,7 +12,7 @@ const productionRecordSchema = new mongoose.Schema({
   },
   employeeId:{
     type : mongoose.ObjectId,
-    ref : "Employee"
+    ref : "Users"
   },
   assemblyTime:{
     type : Number,

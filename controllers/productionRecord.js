@@ -3,16 +3,18 @@ const Production = require("../models/productionRecords");
 
 exports.selectBike = async(req,res)=>{
     try{
-        const { username, bikeId } = req.body;
+        const { userId, bikeId } = req.body;
       const bike = await Bikes.findById(bikeId);
       if (!bike) {
         return res.status(404).json({ message: 'Bike not found' });
       }
       const assemblyTime = bike.assemblyTime;
-      const record = { username, bikeId, assemblyTime };
+      const record = { employeeId : userId, bikeId, assemblyTime, status: 'inProgress'};
       await Production.create(record);
 
-      res.status(201).json({success: true, message:"Record Created" })
+      const empBikelist = await Production.find({employeeId: userId}).populate('bikeId')
+
+      res.status(201).json({success: true, data: empBikelist})
     }catch(err){
         res.status(500).json({message: err.message});
     }
