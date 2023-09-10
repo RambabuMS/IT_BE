@@ -1,5 +1,6 @@
 const Bikes = require("../models/bikes");
 const Production = require("../models/productionRecords");
+const moment = require('moment');
 
 exports.selectBike = async(req,res)=>{
     try{
@@ -27,6 +28,31 @@ exports.getRecords = async(req,res)=>{
         const productionRecords = await Production.find({username: username,createdAt: date});
 
         res.status(200).json({success : true, data: productionRecords})
+
+    }catch(err){
+        res.status(500).json({message: err.message});
+    }
+}
+
+exports.getAllRecords = async(req,res)=>{
+    try{
+    const { fromDate, toDate } = req.query;
+    let productionRecords;
+    if(fromDate && toDate){
+        const formattedFromDate = moment(fromDate).format("YYYY-MM-DDTHH:mm:ss.SSSZ");
+        const formattedToDate = moment(toDate).format("YYYY-MM-DDTHH:mm:ss.SSSZ");
+        productionRecords = await Production.find({
+            createdAt: { 
+                $gte: new Date(formattedFromDate), 
+                $lte: new Date(formattedToDate) 
+            },
+            })
+            .where({status : 'Completed'});
+    } else {
+        productionRecords = await Production.find().where({status : 'Completed'});
+    }
+
+    res.status(200).json({success : true, data: productionRecords})
 
     }catch(err){
         res.status(500).json({message: err.message});
