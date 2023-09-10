@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const productionRecordSchema = new mongoose.Schema({
   status:{
@@ -25,4 +25,4 @@ const productionRecordSchema = new mongoose.Schema({
 
 const ProductionRecord = mongoose.model('ProductionRecord', productionRecordSchema);
 
-module.exports = ProductionRecord;
+export default ProductionRecord;

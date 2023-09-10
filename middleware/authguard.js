@@ -1,5 +1,3 @@
-
-
 const authorizeUser = (roles)=>{
     return (req, res, next) => {
         const { role } = req.user;
@@ -12,4 +10,4 @@ const authorizeUser = (roles)=>{
       };
 }
 
-module.exports = authorizeUser;
+export default authorizeUser;

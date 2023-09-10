@@ -1,8 +1,8 @@
-const Bikes = require("../models/bikes");
-const Production = require("../models/productionRecords");
-const moment = require('moment');
+import Bikes from "../models/bikes.js";
+import Production from "../models/productionRecords.js";
+import moment from 'moment';
 
-exports.selectBike = async(req,res)=>{
+const selectBike = async(req,res)=>{
     try{
         const { userId, bikeId } = req.body;
       const bike = await Bikes.findById(bikeId);
@@ -21,8 +21,7 @@ exports.selectBike = async(req,res)=>{
     }
 }
 
-
-exports.getRecords = async(req,res)=>{
+const getRecords = async(req,res)=>{
     try{
         const { username, date } = req.query;
         const productionRecords = await Production.find({username: username,createdAt: date});
@@ -34,7 +33,7 @@ exports.getRecords = async(req,res)=>{
     }
 }
 
-exports.getAllRecords = async(req,res)=>{
+const getAllRecords = async(req,res)=>{
     try{
     const { fromDate, toDate } = req.query;
     let productionRecords;
@@ -59,3 +58,8 @@ exports.getAllRecords = async(req,res)=>{
     }
 }
 
+export default {
+    selectBike,
+    getRecords,
+    getAllRecords    
+}
