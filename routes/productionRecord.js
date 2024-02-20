@@ -4,7 +4,7 @@ const router = express.Router();
 const { selectBike, getRecords, getAllRecords } = prController;
 
 router.post('/select-bike',selectBike);
-router.get('/bike-data/?:username/?:date',getRecords);
+router.get('/bike-data',getRecords);
 router.get('/all_bike_data', getAllRecords);
 
 export default router;
